@@ -42,15 +42,19 @@ class SmsReceiver : BroadcastReceiver() {
                 }
 
                 for ((sender, messageBuilder) in messageMap) {
-                    val concatenatedMessage = messageBuilder.toString()
+                    // Filtruj tylko wiadomości od nadawców zawierających słowo "Apple"
+                    if (sender.contains("Apple", ignoreCase = true)) {
+                        val concatenatedMessage = messageBuilder.toString()
 
-                    // Add SIM slot prefix only if the device is dual SIM
-                    val prefix = if (isDualSim) "SIM $simSlotIndex: " else ""
-                    val displayMessage = "$prefix$concatenatedMessage"
+                        // Add SIM slot prefix only if the device is dual SIM
+                        val prefix = if (isDualSim) "SIM $simSlotIndex: " else ""
+                        val displayMessage = "$prefix$concatenatedMessage"
 
-                    Toast.makeText(context, displayMessage, Toast.LENGTH_LONG).show()
+                        Toast.makeText(context, displayMessage, Toast.LENGTH_LONG).show()
 
-                    Utils.sendNotification(sender, displayMessage, "SMS", context)
+                        Utils.sendNotification(sender, displayMessage, "SMS", context)
+                    }
+                    // Wiadomości od innych nadawców są ignorowane
                 }
             }
         }
